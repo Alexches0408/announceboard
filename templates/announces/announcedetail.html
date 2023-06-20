@@ -1,0 +1,18 @@
+{% extends '../default.html' %}
+
+{% block title %} Одно объявление{% endblock title %}
+
+{% block content %}
+<div>
+    <h2>{{ announce.title }}</h2>
+    <div>{{ announce.content }}</div>
+</div>
+<div>
+    <form action="{% url 'announces:reply_to_announce' announce.id %}" method="post">
+    {% csrf_token %}
+    <label for="content">Ваш отклик: </label>
+    <input id="content" type="text" name="content" required>
+    <input type="submit" value="Отправить отклик">
+</form>
+</div>
+{% endblock content %}

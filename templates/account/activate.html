@@ -1,0 +1,10 @@
+{% extends '../default.html' %}
+
+{% block title %} Все объявления {% endblock title %}
+
+{% block content %}
+{% autoescape off %}
+<h2>Activate password for {{user.username}} account</h2>
+<div>Please enter password: "{{code}}" in confirm</div>
+{% endautoescape %}
+{% endblock content %}

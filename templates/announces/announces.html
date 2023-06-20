@@ -1,0 +1,13 @@
+{% extends '../default.html' %}
+
+{% block title %} Все объявления {% endblock title %}
+
+{% block content %}
+<div>
+    <h2>Все объявления</h2>
+    {% for announce in announces %}
+        {{ announce.title }}
+        {{ announce.content }}
+    {% endfor %}
+</div>
+{% endblock content %}
