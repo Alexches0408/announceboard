@@ -11,11 +11,17 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+# Quick-start development settings - unsuitable for productionЯ
+# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,11 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django_filters',
     'announces',
     'account',
+    'ckeditor',
+    'ckeditor_uploader',
+    'django_apscheduler',
+    'rest_framework',
 ]
 
-LOGIN_URL = '/announces/'
+LOGIN_URL = '/account/login/'
+
+LOGIN_REDIRECT_URL = '/announces/account'
 
 SITE_ID = 1
 
@@ -101,6 +115,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+EMAIL_USE_SSL = config("EMAIL_USE_SSL")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 
 
 # Internationalization
@@ -110,17 +129,50 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
+REST_FRAMEWORK = {
+
+    'DATETIME_FORMAT': "%d.%m.%Y %H:%M",
+}
+
 USE_I18N = True
 
 USE_TZ = True
 
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': ','.join(
+            [
+                'html5video',
+            ]),
+        'extraPlugins': ','.join(
+            [
+                'html5video',
+            ]),
+        'removePlugins': 'spellchecker, about, save, newpage, print, templates, scayt, flash, pagebreak, smiley,preview,find,',
+    },
+}
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = os.path.join(BASE_DIR, 'static'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+MEDIA_URL = '/images/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
